@@ -31,68 +31,78 @@
 
     </style>
     <script>
-
-
-
+        let count = 0;
+        //Функция добавления нового телефона
         function add() {
-            let container = document.getElementById('phone-list');
-            // console.log(container);
+            let newPhoneNumber = getInputValue(); // Вытягиваем номер телефона из импута
+            if(!newPhoneNumber) {
+                console.error('Введите номер телефона пожалуйста!!');
+                return null;
+            }
+            let newTag = createElement(newPhoneNumber); // Создаем новый элемент
+            addElementToList(newTag);
+        }
+
+        //Возвращаем контейнер списка
+        function getListContanier(){
+            let phonebook = getPhonebookContainer();
+            console.log(phonebook)
+            let container = phonebook.querySelector('#phone-list');
             if (!container) {
                 console.error('Контейнера нет');
                 return;
             }
-            let aTag = document.createElement("div");
-            aTag.classList.add('item');
-
-            aTag.innerHTML = "<div><p class='number'>Ваш номер: input.value</p></div><button class='remove' onclick='remove()'>x</button>";
-
-            let input = document.querySelector('#input-number').value;
-
-            let newEL = document.querySelector('#input-number').value;
-
-            // input.value = input.value.substr(0, 15);
-
-            console.log('Значение поля input:', input);
-
-            let divNumber = document.querySelector('.number').innerHTML = input;
-            console.log(divNumber);
-            // divNumber.replace(input.value, "&lt;")
-
-            // divNumber.textContent = input.value;
-
-
-
-
-
-            let newEl = container.appendChild(aTag);
-            if (newEl) {
-                console.log('Элемент добавлен', newEl);
-
-            }
-
-
-
-
-
+            return container;
         }
 
-        function remove(){
-            let container = document.getElementById('phone-list');
+        // возвращаем самый главный контейнер
+        function getPhonebookContainer(){
+            let container = document.getElementById('phonebook');
             if (!container) {
-                console.error('Контейнера нет');
+                console.error('Главного контейнера phonebook нет');
                 return;
             }
-            const del = container.querySelector('.item');
+            return container;
+        }
 
-            let oldElement = container.removeChild(del);
-            if (oldElement) {
-                console.log('Элемент удалён', oldElement);
+        //получаем значение элемента
+        function getInputValue(){
+            let phonebook = getPhonebookContainer();
+            if(phonebook)
+                return phonebook.querySelector('#input-number').value
+            else return null;
+        }
 
+
+        // Создание тега
+        function createElement(phoneNumber){
+            if(!phoneNumber) return null;
+
+            let newTag = document.createElement("div");
+
+            newTag.classList.add('item');
+            newTag.innerHTML = `<div data-id="${count}"><p class='number'>${phoneNumber}</p></div><button class='remove'>x</button>`;
+            newTag.addEventListener('click', remove);
+            return newTag;
+        }
+
+        //Добавляет елемент в список
+        function addElementToList(aTag){
+            const container = getListContanier(); //находим контейрен лист
+            if(!container) return;// Проверяем нашелся ли он?
+            let newEl = container.appendChild(aTag); // Добавляем элемент в контейнер
+            if (newEl) { //Если добавился
+                // count++;
+                console.log('Элемент добавлен', newEl); //Выводим в консоль сообщение
             }
         }
 
 
 
+        //Удаление элемента
+        function remove(e) {
+            e.target.parentElement.remove(e.target);
+        }
 
     </script>
 </head>
@@ -104,24 +114,15 @@
 <!--1. css по желанию -->
 
 
-<input id="input-number" placeholder="Введите номер телефона без +"  type="number" pattern="^[ 0-9]+$">
+    <div id="phonebook">
+        <input id="input-number" placeholder="Введите номер телефона без +"  type="number" pattern="^[0-9]+$">
 
-<button class="add" onclick="add()">
-    добавить номер телефона
-</button>
-
-<div id="phone-list">
-    <div class="item">
-        <div>
-            <p class='number'>
-
-            </p>
-        </div>
-        <button class="remove" onclick="remove()">
-            x
+        <button class="add" onclick="add()">
+            добавить номер телефона
         </button>
+        <div id="phone-list">
+        </div>
     </div>
-</div>
 
 
 </body>
